@@ -6,11 +6,11 @@ public class LaboratorioRestApiDbContext : DbContext
 {
     public LaboratorioRestApiDbContext(DbContextOptions<LaboratorioRestApiDbContext> options) : base(options){}
     
-    DbSet<Autor> Autores { get; set; }
+  public DbSet<Autor> Autores { get; set; }
+  
+  public DbSet<Emprestimo> Emprestimos { get; set; }
     
-    DbSet<Emprestimo> Emprestimos { get; set; }
-    
-    DbSet<Livro> Livros { get; set; }
+  public DbSet<Livro> Livros { get; set; }
     
     
 }
