@@ -8,4 +8,5 @@ public class Emprestimo
     public bool Entregue { get; set; }
     
     public long LivroId { get; set; }
+    public Livro Livro { get; set; }
 }

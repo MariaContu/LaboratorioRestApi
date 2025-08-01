@@ -6,5 +6,5 @@ public class Autor
     public string PrimeiroNome { get; set; }
     public string UltimoNome { get; set; }
 
-    public List<Livro> Livros { get; set; } = null!;
+    public ICollection<Livro> Livros { get; set; } = null!;
 }
