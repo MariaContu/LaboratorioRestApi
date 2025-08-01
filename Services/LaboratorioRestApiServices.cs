@@ -1,4 +1,5 @@
 ﻿using LaboratorioRestApi.DTO;
+using LaboratorioRestApi.Models;
 using LaboratorioRestApi.Repositories;
 
 namespace LaboratorioRestApi.Services;
@@ -9,6 +10,7 @@ public class LaboratorioRestApiServices
     public readonly IEmprestimoRepository _emprestimoRepository;
     public readonly ILivroRepository _livroRepository;
 
+    private const decimal MultaPorDia = 3.50m; //multa por dia de atraso
     public LaboratorioRestApiServices(
         IAutorRepository autorRepository,
         IEmprestimoRepository emprestimoRepository,
@@ -40,7 +42,41 @@ public class LaboratorioRestApiServices
     }
     
     //emprestar livro
+    public async Task<bool> EmprestarLivro(long livroId)
+    {
+        var emprestimoExistente = await _emprestimoRepository.GetEmprestimoAbertoPorLivro(livroId);
+        if (emprestimoExistente != null)
+            return false; //livro indisponivel
+
+        var novoEmprestimo = new Emprestimo
+        {
+            LivroId = livroId,
+            DataRetirada = DateTime.Now,
+            DataEntregaPrevista = DateTime.Now.AddDays(7),
+            Entregue = false
+            
+        };
+        
+        await _emprestimoRepository.AddAsync(novoEmprestimo);
+        return true;
+    }
     
     //devolver livro
-    
+    public async Task<decimal?> DevolverLivro(long livroId)
+    {
+        var emprestimo = await _emprestimoRepository.GetEmprestimoAbertoPorLivro(livroId);
+        
+        if (emprestimo == null)
+            return null; //nenhum emprestimo em aberto
+        
+        emprestimo.DataDevolucao = DateTime.Now;
+        await _emprestimoRepository.UpdateAsync(emprestimo);
+
+        if (emprestimo.DataDevolucao > emprestimo.DataEntregaPrevista)
+        {
+            var diasAtraso = (emprestimo.DataDevolucao.Value - emprestimo.DataEntregaPrevista.Value).Days;
+            return diasAtraso * MultaPorDia;
+        }
+        return 0;
+    }
 }

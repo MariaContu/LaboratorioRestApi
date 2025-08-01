@@ -1,14 +1,13 @@
-﻿namespace LaboratorioRestApi.Models;
+namespace LaboratorioRestApi.DTO;
 
-public class Emprestimo
+public class EmprestimoDTO
 {
     public long Id { get; set; }
     public DateTime DataRetirada { get; set; }
     public DateTime? DataDevolucao { get; set; }
-    
     public bool Entregue { get; set; }
-    public DateTime? DataEntregaPrevista { get; set; }
+    
     
     public long LivroId { get; set; }
-    public Livro Livro { get; set; }
+    public string? TituloLivro { get; set; } // opcional exibir o nome do livro
 }
